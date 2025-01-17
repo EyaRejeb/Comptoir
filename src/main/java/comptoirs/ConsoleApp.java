@@ -1,6 +1,7 @@
 package comptoirs;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
-
-import comptoirs.dao.UnitesCommandeesParProduit;
 import comptoirs.entity.*;
 import comptoirs.dao.*;
 
@@ -88,6 +87,25 @@ public class ConsoleApp implements CommandLineRunner {
         clientDAO.produitsParClient().forEach(
             ppc -> log.info("Le client {} a commandé {} produits différents", ppc.getSociete(), ppc.getNombre())
         );
+    
+        //Question 1
+        Integer numeroCommande = 10248; // Exemple d'ID de commande
+        BigDecimal montant = commandeDAO.montantArticles(numeroCommande);
+
+        System.out.printf("Le montant des articles pour la commande %d est de %.2f%n", numeroCommande, montant);
+        
+        //Question 2
+        String codeClient = "ALFKI"; // Exemple de code client
+        List<MontantParCommande> commandes = commandeDAO.findCommandesByClient(codeClient);
+
+        commandes.forEach(commande -> {
+            System.out.printf("Commande #%d | Port : %.2f | Montant : %.2f%n",
+                commande.getNumeroCommande(),
+                commande.getPort(),
+                commande.getMontantArticles());
+        });
+
+
     }
 
     public static void tapezEnterPourContinuer() throws IOException  {
