@@ -5,12 +5,15 @@ import comptoirs.entity.Ligne;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import java.util.*;
 
 @DataJpaTest
 public class CommandeRepositoryTest {
@@ -58,4 +61,31 @@ public class CommandeRepositoryTest {
         assertEquals(commandeAvecProduits, commande);
         assertEquals(2, commande.getLignes().size());
     }
+
+    //Test implémenté pour la question 1
+    @Test
+    void testMontantArticles() {
+        Integer numeroCommande = 10248; // Remplacez par un ID valide de votre base
+        BigDecimal montantAttendu = new BigDecimal("2830.0000"); // Exemple de valeur attendue
+        BigDecimal montant = commandeDao.montantArticles(numeroCommande);
+
+        assertThat(montant).isEqualTo(montantAttendu);
+    }
+
+    //Test implémenté pour la question 2
+    @Test
+    void testFindCommandesByClient() {
+        String codeClient = "ALFKI"; // Remplacez par un code client existant
+        List<MontantParCommande> commandes = commandeDao.findCommandesByClient(codeClient);
+
+        assertThat(commandes).isNotEmpty();
+
+        commandes.forEach(commande -> {
+            System.out.printf("Commande #%d | Port : %.2f | Montant : %.2f%n",
+                commande.getNumeroCommande(),
+                commande.getPort(),
+                commande.getMontantArticles());
+        });
+    }
+
 }
