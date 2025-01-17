@@ -8,6 +8,23 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface CommandeRepository extends JpaRepository<Commande, Integer> {
+
+    /**
+ * Calcule le montant des articles commandés dans une commande
+ * @param numeroCommande le numéro de la commande à traiter
+ * @return le montant des articles commandés, en tenant compte de la remise
+ */
+
+ @Query("""
+    SELECT SUM(l.quantite * p.prixUnitaire * (1 - c.remise))
+    FROM Commande c
+    JOIN c.lignes l
+    JOIN l.produit p
+    WHERE c.numero = :numeroCommande
+""")
+BigDecimal montantArticles(Integer numeroCommande);
+
+    
     @Query(
             // Chaîne de caractères multilignes
             """
